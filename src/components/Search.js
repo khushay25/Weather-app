@@ -8,31 +8,42 @@ const Search = ({ fetchWeather }) => {
   const [city, setCity] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleFetchWeather = () => {
-    fetchWeather(city);
+  const handleFetchWeather = async () => {
+    setError("");
+    try {
+      await fetchWeather(city);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   useEffect(() => {
     const fetchCitySuggestions = async () => {
       if (city) {
-        const suggestionsData = await getSuggestions(city);
-        const filteredSuggestions = suggestionsData.filter((suggestion) =>
-          suggestion.name.toLowerCase().includes(city.toLowerCase())
-        );
-        setSuggestions(filteredSuggestions);
+        try {
+          const suggestionsData = await getSuggestions(city);
+          const filteredSuggestions = suggestionsData.filter((suggestion) =>
+            suggestion.name.toLowerCase().includes(city.toLowerCase())
+          );
+          setSuggestions(filteredSuggestions);
+        } catch (error) {
+          setError("Error fetching city suggestions.");
+        }
       } else {
         setSuggestions([]);
       }
     };
 
-    fetchCitySuggestions();
+    const debounceTimeout = setTimeout(fetchCitySuggestions, 200);
+    return () => clearTimeout(debounceTimeout);
   }, [city]);
 
   const handleSelect = (suggestion) => {
-    console.log(suggestion);
     setCity(suggestion.name);
     setShowDropdown(false);
+    setError("");
   };
 
   return (
@@ -52,6 +63,7 @@ const Search = ({ fetchWeather }) => {
         onChange={(e) => {
           setCity(e.target.value);
           setShowDropdown(true);
+          setError("");
         }}
         onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
       />
@@ -71,13 +83,13 @@ const Search = ({ fetchWeather }) => {
               key={index}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDarkMode
-                  ? `${colors.dark.secondary}70` // Adjust for hover
-                  : `${colors.light.secondary}70`; // Adjust for hover
+                  ? `${colors.dark.secondary}70`
+                  : `${colors.light.secondary}70`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "transparent";
               }}
-              className="p-2 cursor-pointer button "
+              className="p-2 cursor-pointer button"
               onClick={() => handleSelect(suggestion)}
             >
               {suggestion.name}, {suggestion.country}
@@ -86,7 +98,7 @@ const Search = ({ fetchWeather }) => {
         </ul>
       )}
       <button
-        className="p-2 px-12 my-2 text-sm sm:text-base text-center sm:px-2 sm:my-0 rounded-md "
+        className="p-2 px-12 my-2 text-sm sm:text-base text-center sm:px-2 sm:my-0 rounded-md"
         style={{
           backgroundColor: isDarkMode
             ? `${colors.dark.secondary}50`
@@ -100,6 +112,7 @@ const Search = ({ fetchWeather }) => {
       >
         Get Weather
       </button>
+      {error && alert(error)}
     </div>
   );
 };

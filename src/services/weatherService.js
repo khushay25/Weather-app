@@ -3,15 +3,22 @@ import axios from "axios";
 const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 const BASE_URL = "http://api.weatherapi.com/v1";
 
-export const getWeather = async (city) => {
+export const getWeatherAndForecast = async (city) => {
   try {
     const response = await axios.get(
-      `${BASE_URL}/current.json?key=${API_KEY}&q=${city}`
+      `${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=5`
     );
-    return response.data;
+    return {
+      weather: response.data.current,
+      forecast: response.data.forecast.forecastday,
+      location: response.data.location,
+    };
   } catch (error) {
-    console.error("Error fetching weather data", error);
-    return null;
+    if (error.response && error.response.status === 400) {
+      throw new Error("City not found");
+    } else {
+      throw new Error("Network error");
+    }
   }
 };
 
@@ -21,22 +28,8 @@ export const getSuggestions = async (query) => {
     const response = await axios.get(
       `${BASE_URL}/search.json?key=${API_KEY}&q=${query}`
     );
-    console.log(response);
     return response.data;
   } catch (error) {
-    console.error("Error fetching suggestions", error);
-    return [];
-  }
-};
-
-export const getForecast = async (city) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/forecast.json?key=${API_KEY}&q=${city}&days=5`
-    );
-    return response.data.forecast.forecastday;
-  } catch (error) {
-    console.error("Error fetching forecast data", error);
-    return [];
+    throw new Error("Network error");
   }
 };

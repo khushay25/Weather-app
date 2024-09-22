@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import colors from "../theme/colors";
 import { useTheme } from "../context/ThemeContext";
 
+const convertToFahrenheit = (tempC) => ((tempC * 9) / 5 + 32).toFixed(2);
+
 const Greetings = ({ weatherData, isFahrenheit }) => {
   const { isDarkMode } = useTheme();
   const [greetingMessage, setGreetingMessage] = useState("");
   const [weatherMessage, setWeatherMessage] = useState("");
-
-  const convertToFahrenheit = (tempC) => ((tempC * 9) / 5 + 32).toFixed(2);
 
   const getTimeBasedGreeting = (localTime) => {
     const hours = new Date(localTime).getHours();
@@ -75,11 +75,13 @@ const Greetings = ({ weatherData, isFahrenheit }) => {
         >
           <p className="font-extrabold text-3xl sm:text-7xl lg:text-9xl">
             {isFahrenheit
-              ? `${convertToFahrenheit(weatherData.current.temp_c)}°F` // Use temp_c
+              ? `${convertToFahrenheit(weatherData.current.temp_c)}°F`
               : `${weatherData.current.temp_c}°C`}
           </p>
           <p className="font-semibold text-xs sm:text-lg lg:text-xl flex items-center">
             <img
+              loading="lazy"
+              className="h-10 w-10 md:w-16 md:h-16"
               src={weatherData.current.condition.icon}
               alt={weatherData.current.condition.text}
             />

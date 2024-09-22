@@ -50,6 +50,7 @@ const WeatherCard = ({ forecastData, isFahrenheit }) => {
                 {getDayOfWeek(day.date)}
               </h3>
               <img
+                loading="lazy"
                 src={day.day.condition.icon}
                 alt={day.day.condition.text}
                 className="mx-auto"
