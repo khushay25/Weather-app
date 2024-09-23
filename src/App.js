@@ -1,4 +1,10 @@
-import React, { useEffect, useState, lazy } from "react";
+import React, {
+  useEffect,
+  useState,
+  lazy,
+  startTransition,
+  useCallback,
+} from "react";
 import "./App.css";
 import videoSrcLight from "./utils/light-mode-bg.mp4";
 import videoSrcDark from "./utils/dark-mode-bg.mp4";
@@ -16,28 +22,39 @@ const App = () => {
   const [isFahrenheit, setIsFahrenheit] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const fetchWeather = async (city) => {
-    setLoading(true);
-    try {
-      const { weather, forecast, location } = await getWeatherAndForecast(city);
-      setWeather({ current: weather, location });
-      setForecast(forecast);
+  const CACHE_TTL = 3600000; // 1 hour in milliseconds
 
-      const weatherCache = {
-        city,
-        weatherData: { current: weather, location },
-        forecastData: forecast,
-        timestamp: new Date().getTime(),
-      };
-      localStorage.setItem("lastSearchedWeather", JSON.stringify(weatherCache));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchWeather = useCallback(
+    async (city) => {
+      setLoading(true);
+      try {
+        const { weather, forecast, location } = await getWeatherAndForecast(
+          city
+        );
+        setWeather({ current: weather, location });
+        setForecast(forecast);
 
-  const CACHE_TTL = 3600000;
+        const weatherCache = {
+          city,
+          weatherData: { current: weather, location },
+          forecastData: forecast,
+          timestamp: new Date().getTime(),
+          isDarkMode,
+          isFahrenheit,
+        };
+
+        localStorage.setItem(
+          "lastSearchedWeather",
+          JSON.stringify(weatherCache)
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [isDarkMode, isFahrenheit]
+  );
 
   useEffect(() => {
     const cachedWeather = localStorage.getItem("lastSearchedWeather");
@@ -47,17 +64,58 @@ const App = () => {
         new Date().getTime() - parsedCache.timestamp > CACHE_TTL;
 
       if (!isCacheExpired) {
-        setCity(parsedCache.city);
-        setWeather(parsedCache.weatherData);
-        setForecast(parsedCache.forecastData);
-        return;
+        startTransition(() => {
+          setCity(parsedCache.city);
+          setWeather(parsedCache.weatherData);
+          setForecast(parsedCache.forecastData);
+
+          setIsFahrenheit(parsedCache.isFahrenheit ?? false);
+          if (
+            parsedCache.isDarkMode !== undefined &&
+            parsedCache.isDarkMode !== isDarkMode
+          ) {
+            toggleDarkMode();
+          }
+        });
+      } else {
+        fetchWeather(city);
       }
+    } else {
+      fetchWeather(city);
     }
-    fetchWeather(city);
-  }, [city]);
+  }, [city, isDarkMode, toggleDarkMode, fetchWeather]);
 
   const toggleUnit = () => {
-    setIsFahrenheit((prevUnit) => !prevUnit);
+    startTransition(() => {
+      const updatedUnit = !isFahrenheit;
+      setIsFahrenheit(updatedUnit);
+
+      const cachedWeather = localStorage.getItem("lastSearchedWeather");
+      if (cachedWeather) {
+        const parsedCache = JSON.parse(cachedWeather);
+        parsedCache.isFahrenheit = updatedUnit;
+        localStorage.setItem(
+          "lastSearchedWeather",
+          JSON.stringify(parsedCache)
+        );
+      }
+    });
+  };
+
+  const handleToggleDarkMode = () => {
+    startTransition(() => {
+      toggleDarkMode();
+
+      const cachedWeather = localStorage.getItem("lastSearchedWeather");
+      if (cachedWeather) {
+        const parsedCache = JSON.parse(cachedWeather);
+        parsedCache.isDarkMode = !isDarkMode;
+        localStorage.setItem(
+          "lastSearchedWeather",
+          JSON.stringify(parsedCache)
+        );
+      }
+    });
   };
 
   return (
@@ -94,7 +152,7 @@ const App = () => {
           fetchWeather={fetchWeather}
           isFahrenheit={isFahrenheit}
           toggleUnit={toggleUnit}
-          toggleDarkMode={toggleDarkMode}
+          toggleDarkMode={handleToggleDarkMode}
           isDarkMode={isDarkMode}
         />
         <Greetings weatherData={weather} isFahrenheit={isFahrenheit} />
