@@ -106,4 +106,4 @@ To run this project locally, you'll need:
 
 #### Deployed Application
 
-You can test the application online at: weather-app-bice-five-44.vercel.app/
+You can test the application online at: (weather-app-bice-five-44.vercel.app/)
