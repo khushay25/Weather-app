@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Weather Forecast Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a weather forecast application built using **ReactJS** and **Tailwind CSS**. The app allows users to search for current weather conditions by city and displays a greeting message along with weather-specific suggestions based on the time of day and weather conditions. The application is optimized for performance, supports light and dark modes, uses caching for enhanced performance, and has a fully responsive UI for various screen sizes.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### 1. **City Search with Autocomplete**
+   - Users can search for cities using an input field with an autocomplete dropdown.
+   - Upon selecting a city, the weather data for that city is fetched and displayed.
+   - Error handling is integrated to show appropriate messages when the city is not found or if there's a network issue.
 
-### `npm start`
+### 2. **Dynamic Greeting Messages**
+   - The application provides a greeting message based on the time of day and weather conditions in the searched city (e.g., "Good morning, it's sunny outside, don't forget your SPF!").
+   - The default city is New York, and the message updates based on user search.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 3. **Caching with LocalStorage**
+   - The application uses localStorage to cache weather data for each searched city, improving performance by avoiding redundant API calls.
+   - Cached data is refreshed every 10 minutes to ensure that users always have updated weather information.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 4. **Light/Dark Mode Theme**
+   - The app supports light and dark modes.
+   - The theme can be toggled manually and is remembered using localStorage for future visits.
+   - The theme folder contains predefined colors for light and dark modes, ensuring consistent styling throughout the application.
 
-### `npm test`
+### 5. **Lazy Loading for Performance Optimization**
+   - Lazy loading is implemented for weather icons and other heavy assets to improve the initial loading time and overall performance of the application.
+   - Non-critical resources are loaded only when needed, reducing bandwidth usage and improving the user experience.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 6. **Responsive UI**
+   - The application is fully responsive, ensuring a seamless experience across various devices, including desktops, tablets, and smartphones.
+   - The layout adapts gracefully to different screen sizes, providing a consistent user interface.
 
-### `npm run build`
+### 7. **Error Handling**
+   - The app gracefully handles different types of errors such as city not found or network issues and displays user-friendly messages in such cases.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 8. **Tailwind CSS for Styling**
+   - **Tailwind CSS** is used to style the application, ensuring rapid development and a consistent design system.
+   - Tailwind provides utility-first classes, which makes customization easier and keeps the CSS file size smaller.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Performance Optimizations
+   - **Lazy Loading**: Heavy resources like weather icons are lazy-loaded, improving performance by reducing the time taken for the initial load.
+   - **Caching**: LocalStorage is used to cache responses from the weather API for each city, reducing API requests and improving load times for frequent searches.
+   - **Minimized API Calls**: Only necessary API calls are made, and previously fetched data is reused from localStorage wherever applicable.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Technologies Used
+   - **ReactJS**: For building the UI components and managing state.
+   - **Tailwind CSS**: For styling the app with utility-first classes.
+   - **WeatherAPI**: To fetch real-time weather data for cities.
+   - **CSS Flexbox and Grid**: To achieve responsive layouts.
+   - **LocalStorage**: For caching weather data and saving user preferences (like theme mode).
 
-### `npm run eject`
+## Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+To run this project locally, you'll need:
+   - **Node.js** installed on your machine.
+   - A **WeatherAPI** key from [WeatherAPI.com](https://www.weatherapi.com/) for fetching weather data.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Installation and Running Locally
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. **Clone the repository:**
+   git clone (https://github.com/khushay25/Weather-app/)
+   
+2. **Navigate to Project Directory:**
+   cd weather-forecast-app
+   
+3. **Install the dependencies:**
+   npm install
+   
+4. **Add your WeatherAPI key:**
+   - Create a .env file in the root of the project.
+   - Add your WeatherAPI key in the .env file:
+     REACT_APP_WEATHER_API_KEY=your_weather_api_key
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+5. **Run the app locally:**
+   npm start
 
-## Learn More
+6. **Open the application in your browser:**
+   The app will run on http://localhost:3000/
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### Future Improvements
+- Notifications for Severe Weather
+- Multi-language Support
+- Animations and Transitions
+   
