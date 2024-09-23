@@ -78,24 +78,6 @@ To run this project locally, you'll need:
 6. **Open the application in your browser:**
    The app will run on http://localhost:3000/
 
-#### Folder Structure
-weather-forecast-app/
-│
-├── src/
-│   ├── components/         # Reusable UI components
-│   ├── services/           # Web service logic for fetching weather data
-│   ├── theme/              # Theme folder with light and dark mode colors
-│   ├── assets/             # Images and weather icons
-│   ├── App.js              # Main application file
-│   └── index.js            # Entry point for the React app
-│
-├── public/                 # Public files (index.html, favicon, etc.)
-├── .env                    # Environment variables for WeatherAPI key
-├── postcss.config.js       # PostCSS configuration for Tailwind CSS
-├── tailwind.config.js      # Tailwind CSS configuration file
-├── package.json            # Dependencies and scripts
-└── README.md               # Documentation for the app
-
 #### Future Improvements
 - Notifications for Severe Weather
 - Multi-language Support
